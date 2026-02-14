@@ -129,7 +129,7 @@
 
   <script>
     let allFiles = [];
-    const API_URL = 'https://script.google.com/macros/s/AKfycbw19mqyV56m6FCRqJatteg-7VYioKbzUY6plu5GdTUkVt41iFA19Qe1MeJz70agC6Hy/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyK-2LryRrCHHr_jJSwt5X_TeBGQe4DIL73yyk-kiLFq2M6g-WtBIE7RpoBIGmExAl/exec';
 
     function formatFileSize(bytes) {
       if (bytes === 0) return '0 B';
@@ -202,19 +202,23 @@
     });
 
     function init() {
-      const script = document.createElement('script');
-      script.src = API_URL + '?callback=fileListCallback';
-      script.onerror = () => {
-        document.getElementById('errorContainer').innerHTML = '<div class="error">Error loading files</div>';
-        document.getElementById('content').innerHTML = '';
-      };
-      document.head.appendChild(script);
+      fetch(API_URL, {mode: 'no-cors'})
+        .then(response => response.text())
+        .then(text => {
+          try {
+            const files = JSON.parse(text);
+            allFiles = files;
+            renderFiles();
+          } catch(e) {
+            document.getElementById('errorContainer').innerHTML = '<div class="error">Invalid response format</div>';
+            document.getElementById('content').innerHTML = '';
+          }
+        })
+        .catch(error => {
+          document.getElementById('errorContainer').innerHTML = '<div class="error">Error loading files: ' + error.message + '</div>';
+          document.getElementById('content').innerHTML = '';
+        });
     }
-
-    window.fileListCallback = function(files) {
-      allFiles = files;
-      renderFiles();
-    };
 
     init();
   </script>
