@@ -129,7 +129,7 @@
 
   <script>
     let allFiles = [];
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzOCb3gH99cM3nCXdzqhnhv18RO_7guQIXloZc2buYq1OkSQujD0CtwQExW74eJKgTq/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbw19mqyV56m6FCRqJatteg-7VYioKbzUY6plu5GdTUkVt41iFA19Qe1MeJz70agC6Hy/exec';
 
     function formatFileSize(bytes) {
       if (bytes === 0) return '0 B';
@@ -202,17 +202,19 @@
     });
 
     function init() {
-      fetch(API_URL)
-        .then(response => response.json())
-        .then(files => {
-          allFiles = files;
-          renderFiles();
-        })
-        .catch(error => {
-          document.getElementById('errorContainer').innerHTML = '<div class="error">Error loading files: ' + error.message + '</div>';
-          document.getElementById('content').innerHTML = '';
-        });
+      const script = document.createElement('script');
+      script.src = API_URL + '?callback=fileListCallback';
+      script.onerror = () => {
+        document.getElementById('errorContainer').innerHTML = '<div class="error">Error loading files</div>';
+        document.getElementById('content').innerHTML = '';
+      };
+      document.head.appendChild(script);
     }
+
+    window.fileListCallback = function(files) {
+      allFiles = files;
+      renderFiles();
+    };
 
     init();
   </script>
