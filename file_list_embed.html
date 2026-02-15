@@ -47,7 +47,7 @@
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 16px;
     }
     .file-card {
@@ -203,6 +203,14 @@
       }).join('');
 
       document.getElementById('content').innerHTML = html || '<p style="text-align: center; color: #999;">No files found</p>';
+      applyGridClass();
+    }
+
+    function applyGridClass() {
+      const content = document.getElementById('content');
+      if (allFiles.length > 0) {
+        content.className = 'grid';
+      }
     }
 
     document.getElementById('sortBy').addEventListener('change', (e) => {
