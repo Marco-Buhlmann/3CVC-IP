@@ -129,7 +129,7 @@
 
   <script>
     let allFiles = [];
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzEfxAiwabcH2pGM8UJlNkg_AufLH5YFO7a-aqYeJ3KSb1e678LK6kMrDYiYy1sc7upng/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbziv3nnZtXjvba_LnLc0hSB34lmXa1Yjia_cgF06bYhv7lH7rfSoT5nDsmBmQSSFnHD/exec';
 
     function formatFileSize(bytes) {
       if (bytes === 0) return '0 B';
@@ -202,17 +202,11 @@
     });
 
     function init() {
-      fetch(API_URL, {mode: 'no-cors'})
-        .then(response => response.text())
-        .then(text => {
-          try {
-            const files = JSON.parse(text);
-            allFiles = files;
-            renderFiles();
-          } catch(e) {
-            document.getElementById('errorContainer').innerHTML = '<div class="error">Invalid response format</div>';
-            document.getElementById('content').innerHTML = '';
-          }
+      fetch(API_URL)
+        .then(response => response.json())
+        .then(files => {
+          allFiles = files;
+          renderFiles();
         })
         .catch(error => {
           document.getElementById('errorContainer').innerHTML = '<div class="error">Error loading files: ' + error.message + '</div>';
